@@ -25,14 +25,14 @@ export async function addNote(note) {
 }
 
 export async function deleteNote(id) {
-    const response = await fetch(`${BASE_URL}/notes/${id}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to delete note');
-    }
-    return true; 
+  const response = await fetch(`${BASE_URL}/notes/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete note');
   }
+  return true;
+}
 
 export async function archiveNote(id) {
   const response = await fetch(`${BASE_URL}/notes/${id}/archive`, {
@@ -44,14 +44,14 @@ export async function archiveNote(id) {
 }
 
 export async function unarchiveNote(id) {
-    const response = await fetch(`${BASE_URL}/notes/${id}/unarchive`, {
-      method: 'POST',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to unarchive note');
-    }
-    return true; // Indicate successful unarchive
+  const response = await fetch(`${BASE_URL}/notes/${id}/unarchive`, {
+    method: 'POST',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to unarchive note');
   }
+  return true;
+}
 
 export async function fetchArchivedNotes() {
   const response = await fetch(`${BASE_URL}/notes/archived`);

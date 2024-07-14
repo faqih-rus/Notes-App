@@ -1,12 +1,13 @@
-export function showLoading(parentElement) {
-  const loadingIndicator = document.createElement('loading-indicator');
-  loadingIndicator.id = 'global-loading-indicator';
-  parentElement.appendChild(loadingIndicator);
+export function showLoading() {
+  const loadingIndicator = document.querySelector('loading-indicator');
+  if (loadingIndicator) {
+    loadingIndicator.style.display = 'flex';
+  }
 }
 
-export function hideLoading(parentElement) {
-  const loadingIndicator = parentElement.querySelector('#global-loading-indicator');
+export function hideLoading() {
+  const loadingIndicator = document.querySelector('loading-indicator');
   if (loadingIndicator) {
-    parentElement.removeChild(loadingIndicator);
+    loadingIndicator.style.display = 'none';
   }
 }

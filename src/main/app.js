@@ -3,19 +3,21 @@ import NoteForm from '../components/note-form.js';
 import NoteList from '../components/note-list.js';
 import NoteItem from '../components/note-item.js';
 import AppBar from '../components/app-bar.js';
+import LoadingIndicator from '../components/loading-indicator.js';
 
 import { showLoading, hideLoading } from '../utils/loading.js';
 import { fetchNotes, fetchArchivedNotes, addNote as apiAddNote, deleteNote as apiDeleteNote, archiveNote as apiArchiveNote, unarchiveNote as apiUnarchiveNote } from '../data/api.js';
 import '../style/styles.css';
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   const noteForm = document.querySelector('note-form');
   const noteList = document.querySelector('note-list');
   const noteArchive = document.querySelector('note-archive');
 
-  // Fetch initial notes
+
   try {
-    showLoading(document.body); // Show loading indicator
+    showLoading(document.body); 
     const notes = await fetchNotes();
     if (noteList) {
       noteList.notes = notes;
@@ -25,10 +27,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (error) {
     console.error('Failed to fetch notes:', error);
   } finally {
-    hideLoading(document.body); // Hide loading indicator
+    hideLoading(document.body); 
   }
 
-  // Fetch archived notes
+ 
   if (noteArchive) {
     try {
       showLoading(noteArchive);
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('noteArchive element not found');
   }
 
-  // Handle note-added event
+  
   if (noteForm && !noteForm.hasAddedListener) {
     noteForm.addEventListener('note-added', (event) => {
       if (noteList) {
@@ -53,19 +55,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     noteForm.hasAddedListener = true;
   }
 
-  // Handle note-archived event
+  
   if (noteList) {
     noteList.addEventListener('note-archived', (event) => {
       noteList.notes = noteList.notes.filter(note => note.id !== event.detail.id);
     });
 
-    // Handle note-deleted event
+    
     noteList.addEventListener('note-deleted', (event) => {
       noteList.notes = noteList.notes.filter(note => note.id !== event.detail.id);
     });
   }
 
-  // Handle form submit
+
   if (noteForm) {
     noteForm.addEventListener('submit', async (event) => {
       event.preventDefault();

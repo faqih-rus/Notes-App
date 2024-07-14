@@ -2,13 +2,14 @@ import './note-item.js';
 
 class NoteList extends HTMLElement {
   connectedCallback() {
-    this.notes = [];
+    this._notes = [];
     this.fetchNotes();
-  }
 
-  set notes(noteArray) {
-    this._notes = noteArray;
-    this.render();
+    document.addEventListener('note-added', (event) => {
+      this._notes = [event.detail, ...this._notes];
+      this.render();
+      this.animateNewNote();
+    });
   }
 
   async fetchNotes() {
@@ -21,7 +22,7 @@ class NoteList extends HTMLElement {
       }
 
       const result = await response.json();
-      this.notes = result.data;
+      this._notes = result.data;
       this.render();
     } catch (error) {
       alert(`Failed to fetch notes: ${error.message}`);
@@ -58,7 +59,7 @@ class NoteList extends HTMLElement {
         }
       }
       </style>
-      ${this.notes
+      ${this._notes
         .map(
           (note) => `
         <note-item 
@@ -72,6 +73,16 @@ class NoteList extends HTMLElement {
         )
         .join('')}
     `;
+  }
+
+  animateNewNote() {
+    anime({
+      targets: 'note-item:first-of-type',
+      translateY: [-20, 0],
+      opacity: [0, 1],
+      duration: 500,
+      easing: 'easeOutQuad',
+    });
   }
 }
 

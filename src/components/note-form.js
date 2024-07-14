@@ -1,14 +1,20 @@
+import anime from 'animejs';
+import { showLoading, hideLoading } from '../utils/loading.js';
+import '../components/loading-indicator.js';
+
 export class NoteForm extends HTMLElement {
-  connectedCallback() {
-    // Attach shadow DOM
+  constructor() {
+    super();
     this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
     this.render();
     this.setupFormEventListeners();
     this.setupViewArchiveEventListener();
   }
 
   render() {
-    // Use shadow DOM for inner content
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -17,7 +23,6 @@ export class NoteForm extends HTMLElement {
           max-width: 600px;
           margin: 0 auto 2rem;
         }
-
         .note-form {
           display: grid;
           grid-template-columns: 1fr;
@@ -27,13 +32,11 @@ export class NoteForm extends HTMLElement {
           border-radius: 12px;
           box-shadow: 0 4px 6px rgba(53, 114, 239, 0.1), 0 1px 3px rgba(53, 114, 239, 0.08);
         }
-
         .form-group {
           display: grid;
           grid-template-columns: 1fr;
           gap: 0.5rem;
         }
-
         .note-form input,
         .note-form textarea {
           width: 100%;
@@ -44,19 +47,16 @@ export class NoteForm extends HTMLElement {
           box-sizing: border-box;
           transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-
         .note-form input:focus,
         .note-form textarea:focus {
           outline: none;
           border-color: #1E40AF;
           box-shadow: 0 0 0 3px rgba(53, 114, 239, 0.2);
         }
-
         .note-form input:invalid,
         .note-form textarea:invalid {
           border-color: #EF4444;
         }
-
         .note-form button {
           padding: 0.75rem 1.5rem;
           font-size: 1rem;
@@ -69,20 +69,36 @@ export class NoteForm extends HTMLElement {
           justify-self: start;
           transition: background-color 0.3s ease;
         }
-
         .note-form button:hover {
           background-color: #1E40AF;
         }
-
         .error-message {
           color: #EF4444;
           font-size: 0.875rem;
         }
-
         @media (max-width: 600px) {
           :host {
             padding: 0 1rem;
           }
+        }
+        #loading-indicator {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.7);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+          visibility: hidden;
+          opacity: 0;
+          transition: visibility 0s, opacity 0.3s linear;
+        }
+        #loading-indicator.visible {
+          visibility: visible;
+          opacity: 1;
         }
       </style>
       <form class="note-form">
@@ -97,6 +113,7 @@ export class NoteForm extends HTMLElement {
         <button type="submit">Add Note</button>
         <button type="button" id="view-archive">View Archived Notes</button>
       </form>
+      <loading-indicator id="loading-indicator"></loading-indicator>
     `;
   }
 
@@ -115,19 +132,11 @@ export class NoteForm extends HTMLElement {
       }
     };
 
-    titleInput.addEventListener('input', () =>
-      validateInput(titleInput, titleError),
-    );
-    bodyInput.addEventListener('input', () =>
-      validateInput(bodyInput, bodyError),
-    );
+    titleInput.addEventListener('input', () => validateInput(titleInput, titleError));
+    bodyInput.addEventListener('input', () => validateInput(bodyInput, bodyError));
 
-    titleInput.addEventListener('blur', () =>
-      validateInput(titleInput, titleError),
-    );
-    bodyInput.addEventListener('blur', () =>
-      validateInput(bodyInput, bodyError),
-    );
+    titleInput.addEventListener('blur', () => validateInput(titleInput, titleError));
+    bodyInput.addEventListener('blur', () => validateInput(bodyInput, bodyError));
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -141,17 +150,25 @@ export class NoteForm extends HTMLElement {
           body: bodyInput.value,
         };
 
+        showLoading(); 
+
         try {
           const addedNote = await this.addNoteToAPI(newNote);
-          const event = new CustomEvent('note-added', {
-            detail: addedNote,
-          });
-          this.dispatchEvent(event);
-          form.reset();
-          titleError.textContent = '';
-          bodyError.textContent = '';
+          
+          setTimeout(() => {
+            const event = new CustomEvent('note-added', {
+              detail: addedNote,
+            });
+            this.dispatchEvent(event);
+            form.reset();
+            titleError.textContent = '';
+            bodyError.textContent = '';
+          }, 300);
+
         } catch (error) {
           alert(error.message);
+        } finally {
+          hideLoading(); 
         }
       }
     });
@@ -179,7 +196,7 @@ export class NoteForm extends HTMLElement {
     }
 
     const addedNote = await response.json();
-    return addedNote;
+    return addedNote.data;
   }
 }
 
