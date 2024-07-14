@@ -132,11 +132,19 @@ export class NoteForm extends HTMLElement {
       }
     };
 
-    titleInput.addEventListener('input', () => validateInput(titleInput, titleError));
-    bodyInput.addEventListener('input', () => validateInput(bodyInput, bodyError));
+    titleInput.addEventListener('input', () =>
+      validateInput(titleInput, titleError),
+    );
+    bodyInput.addEventListener('input', () =>
+      validateInput(bodyInput, bodyError),
+    );
 
-    titleInput.addEventListener('blur', () => validateInput(titleInput, titleError));
-    bodyInput.addEventListener('blur', () => validateInput(bodyInput, bodyError));
+    titleInput.addEventListener('blur', () =>
+      validateInput(titleInput, titleError),
+    );
+    bodyInput.addEventListener('blur', () =>
+      validateInput(bodyInput, bodyError),
+    );
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -150,11 +158,11 @@ export class NoteForm extends HTMLElement {
           body: bodyInput.value,
         };
 
-        showLoading(); 
+        showLoading();
 
         try {
           const addedNote = await this.addNoteToAPI(newNote);
-          
+
           setTimeout(() => {
             const event = new CustomEvent('note-added', {
               detail: addedNote,
@@ -164,11 +172,10 @@ export class NoteForm extends HTMLElement {
             titleError.textContent = '';
             bodyError.textContent = '';
           }, 300);
-
         } catch (error) {
           alert(error.message);
         } finally {
-          hideLoading(); 
+          hideLoading();
         }
       }
     });

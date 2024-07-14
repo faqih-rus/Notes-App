@@ -1,6 +1,6 @@
 class LoadingIndicator extends HTMLElement {
-    connectedCallback() {
-      this.innerHTML = `
+  connectedCallback() {
+    this.innerHTML = `
         <style>
           .loading-outer {
             display: flex;
@@ -36,11 +36,10 @@ class LoadingIndicator extends HTMLElement {
           <div class="loading-inner"></div>
         </div>
       `;
-    }
   }
-  
-  if (!customElements.get('loading-indicator')) {
-    customElements.define('loading-indicator', LoadingIndicator);
-  }
-  export default LoadingIndicator;
-  
+}
+
+if (!customElements.get('loading-indicator')) {
+  customElements.define('loading-indicator', LoadingIndicator);
+}
+export default LoadingIndicator;

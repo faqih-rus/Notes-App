@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notes App</title>
-  <script type="module" src="./src/components/loading-indicator.js"></script>
-  <style>
-    loading-indicator {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes App</title>
+    <script type="module" src="./src/components/loading-indicator.js"></script>
+    <style>
+      loading-indicator {
         position: fixed;
         top: 0;
         left: 0;
@@ -17,16 +17,16 @@
         justify-content: center;
         align-items: center;
         z-index: 9999;
-    }
-</style>
-</head>
-<body>
-  <app-bar></app-bar>
-  <main>
-    <note-form></note-form>
-    <loading-indicator></loading-indicator>
-    <note-list></note-list>
-  </main>
-  <script src="bundle.js"></script>
-</body>
+      }
+    </style>
+  </head>
+  <body>
+    <app-bar></app-bar>
+    <main>
+      <note-form></note-form>
+      <loading-indicator></loading-indicator>
+      <note-list></note-list>
+    </main>
+    <script src="bundle.js"></script>
+  </body>
 </html>

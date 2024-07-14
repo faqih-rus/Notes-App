@@ -1,5 +1,9 @@
 import anime from 'animejs';
-import { deleteNote as apiDeleteNote, archiveNote as apiArchiveNote, unarchiveNote as apiUnarchiveNote } from '../data/api.js';
+import {
+  deleteNote as apiDeleteNote,
+  archiveNote as apiArchiveNote,
+  unarchiveNote as apiUnarchiveNote,
+} from '../data/api.js';
 
 class NoteItem extends HTMLElement {
   static get observedAttributes() {
@@ -144,7 +148,9 @@ class NoteItem extends HTMLElement {
     try {
       await apiArchiveNote(noteId);
       this.setAttribute('archived', 'true');
-      const event = new CustomEvent('note-archived', { detail: { id: noteId } });
+      const event = new CustomEvent('note-archived', {
+        detail: { id: noteId },
+      });
       this.dispatchEvent(event);
     } catch (error) {
       alert(`Failed to archive the note: ${error.message}`);
@@ -157,7 +163,9 @@ class NoteItem extends HTMLElement {
     try {
       await apiUnarchiveNote(noteId);
       this.setAttribute('archived', 'false');
-      const event = new CustomEvent('note-unarchived', { detail: { id: noteId } });
+      const event = new CustomEvent('note-unarchived', {
+        detail: { id: noteId },
+      });
       this.dispatchEvent(event);
     } catch (error) {
       alert(`Failed to unarchive the note: ${error.message}`);
@@ -166,11 +174,14 @@ class NoteItem extends HTMLElement {
 
   async deleteNote() {
     const noteId = this.getAttribute('id');
-  
+
     try {
       const deleted = await apiDeleteNote(noteId);
       if (deleted) {
-        const event = new CustomEvent('note-deleted', { detail: { id: noteId }, bubbles: true });
+        const event = new CustomEvent('note-deleted', {
+          detail: { id: noteId },
+          bubbles: true,
+        });
         this.dispatchEvent(event);
         this.remove();
       }

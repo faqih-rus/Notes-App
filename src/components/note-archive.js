@@ -1,32 +1,36 @@
-import { fetchArchivedNotes, unarchiveNote as apiUnarchiveNote } from '../data/api.js';
+import {
+  fetchArchivedNotes,
+  unarchiveNote as apiUnarchiveNote,
+} from '../data/api.js';
 import './app-bar.js';
 
 class NoteArchive extends HTMLElement {
-    constructor() {
-      super();
-      this.attachShadow({ mode: 'open' });
-      this.notes = [];
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.notes = [];
+  }
+
+  async connectedCallback() {
+    try {
+      await this.fetchArchivedNotes();
+      this.render();
+      this.setupEventListeners();
+    } catch (error) {
+      this.renderError(error);
     }
-  
-    async connectedCallback() {
-      try {
-        await this.fetchArchivedNotes();
-        this.render();
-        this.setupEventListeners();
-      } catch (error) {
-        this.renderError(error);
-      }
+  }
+
+  async fetchArchivedNotes() {
+    const response = await fetch(
+      'https://notes-api.dicoding.dev/v2/notes/archived',
+    );
+    if (!response.ok) {
+      throw new Error('Failed to fetch archived notes');
     }
-  
-    async fetchArchivedNotes() {
-      const response = await fetch('https://notes-api.dicoding.dev/v2/notes/archived');
-      if (!response.ok) {
-        throw new Error('Failed to fetch archived notes');
-      }
-      const data = await response.json();
-      this.notes = data.data;
-    }
-  
+    const data = await response.json();
+    this.notes = data.data;
+  }
 
   render(notes) {
     this.shadowRoot.innerHTML = `
@@ -135,7 +139,7 @@ class NoteArchive extends HTMLElement {
       <app-bar></app-bar>
       <a href="index.html" class="back-button">Back</a>
       <div id="notes-container">
-        ${this.notes.map(note => this.renderNoteItem(note)).join('')}
+        ${this.notes.map((note) => this.renderNoteItem(note)).join('')}
       </div>
     `;
 
@@ -172,15 +176,18 @@ class NoteArchive extends HTMLElement {
   }
 
   async unarchiveNote(noteId) {
-    const response = await fetch(`https://notes-api.dicoding.dev/v2/notes/${noteId}/unarchive`, {
-      method: 'POST',
-    });
+    const response = await fetch(
+      `https://notes-api.dicoding.dev/v2/notes/${noteId}/unarchive`,
+      {
+        method: 'POST',
+      },
+    );
 
     if (!response.ok) {
       throw new Error('Failed to unarchive note');
     }
 
-    this.notes = this.notes.filter(note => note.id !== noteId);
+    this.notes = this.notes.filter((note) => note.id !== noteId);
     this.render();
   }
 
