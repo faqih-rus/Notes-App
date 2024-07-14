@@ -1,10 +1,19 @@
-export function showFeedback(message, type = 'info') {
+import Swal from 'sweetalert2';
+
+export function showErrorMessage(message) {
   Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
     text: message,
-    icon: type,
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
+    confirmButtonColor: '#3572EF',
+  });
+}
+
+export function showSuccessMessage(message) {
+  Swal.fire({
+    icon: 'success',
+    title: 'Success!',
+    text: message,
+    confirmButtonColor: '#3572EF',
   });
 }

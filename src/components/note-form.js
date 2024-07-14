@@ -1,5 +1,6 @@
 import anime from 'animejs';
 import { showLoading, hideLoading } from '../utils/loading.js';
+import { showErrorMessage, showSuccessMessage } from '../utils/feedback.js';
 import '../components/loading-indicator.js';
 
 export class NoteForm extends HTMLElement {
@@ -163,6 +164,8 @@ export class NoteForm extends HTMLElement {
         try {
           const addedNote = await this.addNoteToAPI(newNote);
 
+          showSuccessMessage('Note added successfully!');
+
           setTimeout(() => {
             const event = new CustomEvent('note-added', {
               detail: addedNote,
@@ -173,7 +176,7 @@ export class NoteForm extends HTMLElement {
             bodyError.textContent = '';
           }, 300);
         } catch (error) {
-          alert(error.message);
+          showErrorMessage(error.message);
         } finally {
           hideLoading();
         }
